@@ -1,0 +1,112 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>UK Street Crime</title>
+
+    <script src="/ukcrime/webjars/jquery/3.2.1/jquery.min.js"></script>
+    <script src="/ukcrime/webjars/popper.js/1.12.5/dist/umd/popper.min.js"></script>
+    <script src="/ukcrime/webjars/bootstrap/4.0.0-beta-1/js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="/ukcrime/webjars/bootstrap/4.0.0-beta-1/css/bootstrap.min.css" />
+
+    <script type="text/javascript">
+
+        var updateMapMarkers = function(lat, lng) {
+            $.getJSON("/ukcrime/api/crimesbylocation?latitude="+lat+"&longitude="+lng)
+                .done(function(data, status, xhr) {
+                    $.each(data, function(idx, crime) {
+                        var latLng = new google.maps.LatLng(Number(crime.location.latitude), Number(crime.location.longitude));
+                        var marker = new google.maps.Marker({
+                            position: latLng,
+                            map: map,
+                            title: crime.id + ': '+crime.category,
+                            animation: google.maps.Animation.DROP,
+                            opacity: 0.7,
+                            optimized: false
+                        });
+
+//                        $('#crimeBox').append('<div class="col-md-4">\n' +
+//                            '                <h2>'+crime.id+'</h2>\n' +
+//                            '                <p>blah blah blah. </p>\n' +
+//                            '                <p><a class="btn btn-secondary" href="#" role="button">View details »</a></p>\n' +
+//                            '            </div>');
+                    });
+                })
+                .fail(function(jqxhr, textStatus, error) {
+                    console.error(textStatus);
+                    $('#main').append('<div class="alert alert-danger" role="alert">\n' +
+                        '                <strong>Error!</strong> API returned a '+jqxhr.status+' error.\n' +
+                        '            </div>');
+                })
+                .always(function() {
+                    //console.log( "complete" );
+                });
+        };
+
+        // Google maps:
+        var map;
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(updateMapWithLocation);
+        } else {
+            console.error('Browser doesnt support location');
+        }
+
+        function initMap() {
+            var config = {
+                center: new google.maps.LatLng(52.629797, -1.130272),
+                zoom: 8,
+                clickableIcons: false
+            };
+            map = new google.maps.Map(document.getElementById('map'), config);
+            map.addListener('dragend', function() {
+                var center = map.getCenter();
+                console.log('Map updated to '+ center.lat() + ' ' + center.lng());
+                updateMapMarkers(center.lat(), center.lng());
+            });
+        }
+        function updateMapWithLocation(location) {
+            var latlng = new google.maps.LatLng(location.coords.latitude, location.coords.longitude);
+            map.panTo(latlng); // map.setCenter(latlng);
+            map.setZoom(14);
+
+            updateMapMarkers(location.coords.latitude, location.coords.longitude);
+        }
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCszEVK_41YsiFt9-Olwa63Gmp1f6BXW3I&callback=initMap" async defer></script>
+</head>
+<body>
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">UK Street Crime</a>
+        </div>
+    </nav>
+
+    <div class="jumbotron">
+        <div class="container">
+            <h1 class="display-4">View Street Crime in your area</h1>
+            <p>Move the map around to reveal street crime in the area. This data is provided freely by the UK Police Data API.</p>
+            <p><a class="btn btn-primary btn-lg" href="https://data.police.uk/" role="button">Learn more »</a></p>
+        </div>
+    </div>
+
+    <div id="main" class="container">
+
+        <div id="map" style="height: 400px;"></div>
+
+        <div id="crimeBox" class="row"></div>
+
+        <hr/>
+        <footer>
+            <p>&copy; Samael Bate 2017</p>
+        </footer>
+    </div>
+
+</body>
+</html>

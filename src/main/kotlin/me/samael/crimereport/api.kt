@@ -21,7 +21,7 @@ class RestEndpoints(@Autowired val service: UkPoliceApi) {
     fun getCrimesForLocation(@RequestParam("latitude") latitude: String,
                                 @RequestParam("longitude") longitude: String): List<Crime> {
         LOG.info("request made for crimes near $latitude $longitude")
-        return service.streetCrimeByLocation(latitude, longitude).take(20)
+        return service.streetCrimeByLocation(latitude, longitude).take(50)
     }
 
     // http://localhost:8080/ukcrime/api/crimesbyforce?force=leicestershire
