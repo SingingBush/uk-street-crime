@@ -1,5 +1,7 @@
 package me.samael.crimereport
 
+import me.samael.crimereport.persistence.Person
+import me.samael.crimereport.persistence.PersonRepository
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
@@ -10,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api")
-class RestEndpoints(@Autowired val service: UkPoliceApi) {
+class RestEndpoints(@Autowired val service: UkPoliceApi, @Autowired val repo: PersonRepository) {
 
     private val LOG = LoggerFactory.getLogger(RestEndpoints::class.java)
 
@@ -31,5 +33,14 @@ class RestEndpoints(@Autowired val service: UkPoliceApi) {
     fun getCrimesForForce(@RequestParam("force") force: String): List<Crime> {
         LOG.info("request made for crimes within $force without location info")
         return service.streetCrimeByPoliceForce(force).take(20)
+    }
+
+    @RequestMapping(value = "/people",
+    method = arrayOf(RequestMethod.GET),
+    produces = arrayOf(MediaType.APPLICATION_JSON_UTF8_VALUE))
+    fun getPeople(): List<Person> {
+        LOG.info("request made getting people from a db using JPA")
+        repo.saveAndFlush(Person(null, "testuser", "Test", "User", "t.u@domain.com"))
+        return repo.findAll()
     }
 }
