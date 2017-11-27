@@ -40,7 +40,7 @@ class RestEndpoints(@Autowired val service: UkPoliceApi, @Autowired val repo: Pe
     produces = arrayOf(MediaType.APPLICATION_JSON_UTF8_VALUE))
     fun getPeople(): List<Person> {
         LOG.info("request made getting people from a db using JPA")
-        repo.saveAndFlush(Person(null, "testuser", "Test", "User", "t.u@domain.com"))
+        //repo.saveAndFlush(Person(null, "testuser", "Test", "User", "t.u@domain.com"))
         return repo.findAll()
     }
 }
