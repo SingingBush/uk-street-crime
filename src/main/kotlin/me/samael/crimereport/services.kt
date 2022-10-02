@@ -20,12 +20,12 @@ class UkPoliceApi(@Autowired val template: RestTemplate) {
 
 
     fun streetCrimeByLocation(latitude: String, longitude: String): List<Crime> {
-        val uri = URI.create("$API_BASE/crimes-street/all-crime?lat=$latitude&lng=$longitude&date=2017-08")
+        val uri = URI.create("$API_BASE/crimes-street/all-crime?lat=$latitude&lng=$longitude&date=2022-08")
         return getCrimes(uri)
     }
 
     fun streetCrimeByPoliceForce(policeForce: String): List<Crime> {
-        val uri = URI.create("$API_BASE/crimes-no-location?category=all-crime&force=$policeForce&date=2017-08")
+        val uri = URI.create("$API_BASE/crimes-no-location?category=all-crime&force=$policeForce&date=2022-08")
         return getCrimes(uri)
     }
 
