@@ -9,6 +9,12 @@ target/
 .settings
 .springBeans
 
+### VS Code (Java Plugin) files ###
+.classpath
+.project
+.settings/
+.vscode/
+
 ### IntelliJ IDEA ###
 .idea
 *.iws
