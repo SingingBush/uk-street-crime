@@ -3,8 +3,8 @@ package me.samael.crimereport.persistence
 import java.sql.Date
 import java.sql.Timestamp
 import java.time.LocalDate
-import javax.persistence.AttributeConverter
-import javax.persistence.Converter
+import jakarta.persistence.AttributeConverter
+import jakarta.persistence.Converter
 import java.time.LocalDateTime
 
 
